@@ -1,9 +1,12 @@
 name: 'Enable Red Hat entitled podman builds'
+description: 'Register a temporary system with Red Hat subscription and configure podman to use the entitlements'
 inputs:
   org:
     description: 'Red Hat account organization'
+    required: true
   activationkey:
     description: 'Red Hat account activation key'
+    required: true
   image:
     description: 'Container image to use to run subscription-manager register'
     default: 'registry.access.redhat.com/ubi10'
