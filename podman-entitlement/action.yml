@@ -17,11 +17,12 @@ runs:
         podman run --rm --name="$NAME" \
           -v "/tmp/etc-pki-entitlement-${{ github.run_id }}":/etc/pki/entitlement-out:z \
           -v "/tmp/rhsm-${{ github.run_id }}":/etc/rhsm-out:z \
+          -e SYSTEM_NAME="$NAME" \
           "${{ inputs.image }}" \
           bash -c '/usr/sbin/subscription-manager register \
                      --org="${{ inputs.org }}" \
                      --activationkey="${{ inputs.activationkey }}" \
-                     --name="'$NAME'" \
+                     --name="$SYSTEM_NAME" \
                    && cp /etc/pki/entitlement/* /etc/pki/entitlement-out/ \
                    && cp -r /etc/rhsm/ca /etc/rhsm/rhsm.conf /etc/rhsm-out \
                    && /usr/sbin/subscription-manager unregister'
