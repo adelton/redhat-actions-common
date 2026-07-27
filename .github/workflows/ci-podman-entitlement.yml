@@ -1,0 +1,55 @@
+name: podman-entitlement CI
+on:
+  push:
+    branches: [podman-entitlement-ci]
+    paths:
+      - 'podman-entitlement/**'
+      - '.github/workflows/ci-podman-entitlement.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  podman:
+    name: Test podman with Red Hat entitlements
+    runs-on: ${{ matrix.runs-on }}
+    strategy:
+      fail-fast: false
+      matrix:
+        runs-on:
+          - ubuntu-26.04
+          - ubuntu-26.04-arm
+          - ubuntu-24.04
+          - ubuntu-24.04-arm
+        include:
+          - runs-on: ubuntu-26.04
+            image: registry.access.redhat.com/ubi9
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Build image
+        run: if podman build ./podman-entitlement/test ; then false ; fi
+
+      - name: Enable entitlements for rootless podman
+        uses: ./podman-entitlement/
+        with:
+          org: ${{ secrets.redhat_org }}
+          activationkey: ${{ secrets.redhat_activationkey }}
+        if: matrix.image == ''
+
+      - name: Enable entitlements for rootless podman with custom image
+        uses: ./podman-entitlement/
+        with:
+          org: ${{ secrets.redhat_org }}
+          activationkey: ${{ secrets.redhat_activationkey }}
+          image: ${{ matrix.image }}
+        if: matrix.image != ''
+
+      - name: Build image
+        run: podman build ./podman-entitlement/test
+
