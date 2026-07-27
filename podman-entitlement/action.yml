@@ -40,7 +40,9 @@ runs:
         INPUTS_ORG: ${{ inputs.org }}
         INPUTS_ACTIVATIONKEY: ${{ inputs.activationkey }}
       shell: bash
-    - run: for i in etc-pki-entitlement rhsm ; do echo "/tmp/$i-${RUN_ID}:/run/secrets/$i" ; done | sudo tee -a /etc/containers/mounts.conf
+    - run: |
+        mkdir -p "$HOME/.config/containers"
+        for i in etc-pki-entitlement rhsm ; do echo "/tmp/$i-${RUN_ID}:/run/secrets/$i" ; done > "$HOME/.config/containers/mounts.conf"
       env:
         RUN_ID: ${{ github.run_id }}
       shell: bash

@@ -7,8 +7,8 @@ repositories.
 
 To avoid modifying the Dockerfiles with extra steps that would
 handle the registration, this Action registers a temporary system
-using organization's activation key, and uses `/etc/containers/mounts.conf`
-to configure subsequent `podman build` invocations to have access
+using organization's activation key, and uses `~/.config/containers/mounts.conf`
+to configure subsequent rootless `podman build` invocations to have access
 to the entitlements.
 
 ## Inputs
@@ -40,4 +40,11 @@ step:
           activationkey: ${{ secrets.redhat_activationkey }}
       - run: podman build -t localhost/the-image:the-tag src
 ```
+
+### Rootful podman
+
+If the same Red Hat entitlement behaviour is desired for rootful
+`sudo podman build` operation, additional step in the workflow is needed
+to copy the `~/.config/containers/mounts.conf` configuration to
+`/etc/containers/mounts.conf`, requising `sudo` or similar mechanism.
 
