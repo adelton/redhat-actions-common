@@ -26,13 +26,13 @@ runs:
           -e SM_KEY="$INPUTS_ACTIVATIONKEY" \
           -e SYSTEM_NAME="$NAME" \
           "$INPUTS_IMAGE" \
-          bash -c '/usr/sbin/subscription-manager register \
+          bash -c 'trap "/usr/sbin/subscription-manager unregister" EXIT ; \
+                   /usr/sbin/subscription-manager register \
                      --org="$SM_ORG" \
                      --activationkey="$SM_KEY" \
                      --name="$SYSTEM_NAME" \
                    && cp /etc/pki/entitlement/* /etc/pki/entitlement-out/ \
-                   && cp -r /etc/rhsm/ca /etc/rhsm/rhsm.conf /etc/rhsm-out ; \
-                   /usr/sbin/subscription-manager unregister'
+                   && cp -r /etc/rhsm/ca /etc/rhsm/rhsm.conf /etc/rhsm-out'
       env:
         RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         RUN_ID: ${{ github.run_id }}
