@@ -21,8 +21,8 @@ to the entitlements.
 
 ## Usage
 
-On https://access.redhat.com/management/activation_keys, create
-new Subscription Manager activation key.
+On https://console.redhat.com/insights/connector/activation-keys,
+new activation key.
 
 Set up secrets in your repository, for example `redhat_org` for your
 Red Hat account organization and `redhat_activationkey` for your Red Hat
